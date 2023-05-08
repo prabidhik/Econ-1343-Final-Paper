@@ -1,0 +1,389 @@
+\documentclass[11pt]{article}
+
+
+\author{\Large  \hbar \alpha y \alpha \tau \omicron o  \ \ \Xi o \tau \sigma \upsilon \ \ (Hayato \ \ Shiotsu)\\
+\Large \int\limits_\gamma^\alpha \beta \sqrt{-1}\partial \hbar i (1.38\times 10^{-23})\ \ \frac{R}{N_A}\frac{1}{\sqrt{\mu_0 \epsilon_0}} \ \ (Prabidhik \ \ KC)}
+\date{\LARGE December 10, 2021} 
+\title{\Huge \textbf{Models of Spreads of Viral Infection}}
+
+
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[bottom]{footmisc}
+\usepackage[margin=1in]{geometry}
+\usepackage[shortlabels]{enumitem}
+\usepackage{titlesec}
+\newcommand{\sectionbreak}{\clearpage}
+\usepackage{biblatex}
+\usepackage{amssymb}
+\addbibresource{sample.bib}
+
+\newtheorem{problem}{Problem}
+\newtheorem{theorem}{Theorem}
+\newtheorem*{proposition}{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[theorem]{Definition}
+\renewcommand*{\proofname}{Solution}
+
+\newcommand{\R}{\mathbb{R}}                    
+\newcommand{\C}{\mathbb{C}}                 
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Hayato Shiotsu, Prabidhik KC}    
+\rhead{AM 111 Final Project}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.25ex}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=10cm]{covid_virus.jpeg}
+    \caption{Covid Virus}
+\end{figure}\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\section{Introduction}
+First of all, we would like to express our hearty thanks to Professor Obeid and our amazing TFs: Kevin Howarth and Hongyu Liao for giving the opportunity to do this project. As a group, we learned a lot about different models of viral infection, their mathematical insights, and the ways to mitigate the diseases. In addition to learning new material, we also had lots of fun doing this project.\\
+\\
+
+{\Large\textbf{Models of the Viral Infection }}\\
+\\
+There are different models of the Viral Infection. We cannot cover all the models of viral infection. So, in this project, we will be discussing about two of the representative compartmental models which are as follows:\\
+\\
+SIR Model \\
+SIRD Model \\
+\\
+We will be covering both of these models without vital dynamics meaning that the population is in a closed system, and the total population does not change over time (death included in the population for SIRD model). After discussing both of the models through analytical and numerical treatment, we will be using these models to project the different scenarios for the future for our geographical locations of interest.\\
+\\
+\\
+\textbf{\Large SIR Model}\\
+\\
+SIR Model is one of the simplest compartmental models. This model divides the population in three different compartments: 1) The Susceptible: people who have no immunity to the disease, 2) The Infected: people who have the disease, and 3) The Recovered (or Removed): people who recovered from the disease and got lifetime immunity to it. The total population, N(t), is given by:
+$$N(t) = R(t) + S(t) + T(t)$$
+
+\\
+
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=8.5cm]{SIRModel.jpg}
+    \caption{SIR Model}
+\end{figure}
+
+{\textbf{\large Features and Limitations of SIR Model}}\\
+\\
+SIR Model is simple, but it also oversimplifies the complex disease processes. It assumes that the epidemic is sufficiently short with the closed population so that there is no change in population. Th rate at which susceptible people become infected depends on the individuals of susceptible and infectious compartments.  The rate of the infected population is directly proportional to the number of susceptible and infected individuals. Finally, the rate of the recovered population depends on the infected population.\\
+SIR Model does not incorporate the period between when the individual is exposed to a disease and gets infected.  It also assumes for the homogeneous mixing of the population with all the individuals in the system having an equal probability of contacting one another. Getting the value of parameters is one of the toughest jobs, but the model does not even incorporate for the uncertainty of the model parameters.
+\\
+Using these assumptions, features, and limitations, we can formulate that the number of people in each of the three compartments evolving based on the following system of ordinary differential equation:
+$$\frac{dS}{dt}=-\beta IS$$
+$$\frac{dI}{dt}=\beta IS - \nu I$$
+$$\frac{dR}{dt}=\nu I$$
+\\
+Here, $\beta>0$ is the disease transmission rate, and $\nu$ is the recovery rate. These parameters and the initial conditions determine the outcome of the model. 
+
+{\textbf{\large Analytical Treatment of SIR Model}}\\
+\\
+Let's take a derivative of N (the total number of people) with respect to time.
+$$\frac{dN}{dt}$$
+$$=\frac{d(R+S+I)}{dt}$$
+$$=\frac{dR}{dt}+\frac{dS}{dt}+\frac{dI}{dt}$$
+$$=(\nu I)+(-\beta IS)+(\beta I S -\nu I)$$
+$$=0$$
+This makes sense as the total number does not change with respect to time, and if the total number is constant throughout the time, the derivative with respect to time is 0.\\
+\\
+\textbf{\underline{Will the disease eventually die out?}}\\
+Right hand side of the first differential equation is negative and of the third differential equation is positive. This implies that $\frac{dS}{dt}\leq 0$ and $\frac{dR}{dt}\geq 0$. As $0 \leq S(t) \leq S(0) \leq N$ as well as $0 \leq R(0) \leq R(t) \leq N$, the limits as $t\rightarrow \infty$, S(t) and R(t) exist. So, $\lim_{t\to\infty}$, I(t) also exists implying $\lim_{t\to\infty}$ I(t) = N - $\lim_{t\to\infty}$ S(t) - $\lim_{t\to\infty}$ R(t) exist. For large t, $\frac{dR}{dt}\geq \frac{\nu I}{2} > 0$. This implies $\lim_{t\to\infty} I(t) = \infty$ which is clearly a contradiction since no compartment can ever be greater than N, the total population. There won't be contradiction only when $\lim_{t\to\infty} I(t) = 0$. Hence, the disease will eventually die out.\\
+\\
+\textbf{\underline{Will the disease initially spread?}}\\
+Initially, we don't have any recovered population, but only susceptible and the infected population. Let the initial susceptible population be $S = S_{0}$, Infected population be $I = I_{0}$, and the Recovered population is $R = R_{0} = 0$. We have one of the differential equations as:
+$$\frac{dS}{dt}=-\beta IS$$
+$\beta \geq  0$, $I \geq  0$, and $S \geq  0$. Thus, $\frac{dS}{dt} \leq 0$ because of the negative sign. Since the rate of the susceptible population is negative, susceptible population is decreasing and S must be smaller than or equals to its initial value $S_{0}$
+$$S \leq S_{0}$$
+Using this inequality, our second differential equation becomes:
+$$\frac{dI}{dt} \leq \beta IS_{0} - \nu I$$
+$$\implies \frac{dI}{dt} \leq I(\beta S_{0} - \nu )$$
+The epidemic spreads if the size of Infected population is greater than its initial values. So, if the constant $\beta S_{0} - \nu $ is positive, the disease will spread. So, if $S_0 > \frac{\nu }{\beta}$, the disease will initially spread. \\
+Let $R_0 = \frac{\beta S_0}{\nu}$. This is called the Basic Reproductive Number. If $R_0> 1$, then the disease will initially spread. Basic Reproductive Number is the average number of infection cases directly generated by one case in a population where all the individuals are susceptible.\\
+\\
+\textbf{\underline{What will be the maximum number of infections?}}\\
+Dividing the second differential equation by the first differential equation, we obtain:
+$$\frac{\frac{dI}{dt}}{\frac{dS}{dt}}= \frac{\beta I S-\nu I }{-\beta I S}$$
+$$\frac{dI}{dS}= \frac{\beta I S-\nu I }{-\beta I S}$$
+$$\frac{dI}{dS}=-1 + \frac{\nu }{\beta S}$$
+Let $q = \frac{\beta}{\nu}$. So, our equation in terms of q becomes:
+$$\frac{dI}{dS}=-1 + \frac{1 }{q S}$$
+$$dI = (-1+\frac{1}{qS}) dS$$
+Integrating on both sides,
+$$\int dI = \int (-1+\frac{1}{qS}) dS$$
+$$I = -S + \frac{1}{q}lnS+C$$
+where C is integration constant. Initially, $I = I_{0}$ and $S = S_{0}$. So, 
+$$C = I_0 + S_0 -\frac{1}{q}lnS_0$$
+$$\therefore I = -S + \frac{1}{q}lnS+ I_0 + S_0 -\frac{1}{q}lnS_0$$
+Maximum number of infections occur when:
+$$\frac{dI}{dS}=0$$
+$$-1+\frac{1}{qS}=0$$
+$$qS=1$$
+$$\therefore S = \frac{1}{q}$$
+
+Substituting this value of S in the earlier equation of I
+$$I = -\frac{1}{q} + \frac{1}{q}ln\frac{1}{q}+ I_0 + S_0 -\frac{1}{q}lnS_0$$
+$$I = I_0 + S_0 -\frac{1}{q} (1-ln\frac{1}{q}+lnS_0)$$
+$$I = N -\frac{1}{q} (1-ln\frac{1}{q}+lnS_0)$$
+$$I = N -\frac{1}{q} (1+ln{q}+lnS_0)$$
+$$I_{max} = N -\frac{1}{q} (1+ln{(qS_0)})$$
+
+Hence, the maximum number of infections will be $I_{max}=N-\frac{\nu}{\beta}(1+ln(\frac{\nu}{\beta}S_0))$.\\
+\\
+\textbf{\underline{What will be the total number of infections?}}\\
+To find the total number of infections we need to know when the outbreak ends. Suppose, the outbreak ends at time T. At this time there would be no more infected people, and finding the total number of infections means finding the total number of recovered population at time T.
+We know: 
+$$R+S+I = N$$
+$$R(T) = N-I(T)-S(T)$$
+$$R(T) = N-0-S(T)$$
+$$R(T) = N-S(T)$$
+
+So, at first we need to find the total number of susceptible population at time T.
+From earlier, we have the equation:
+$$ I + S = \frac{1}{q}lnS+ I_0 + S_0 -\frac{1}{q}lnS_0$$
+At time T, I(T) = 0. So,
+$$ S = \frac{1}{q}lnS+ I_0 + S_0 -\frac{1}{q}lnS_0$$
+$$ S = N + \frac{1}{q}lnS -\frac{1}{q}lnS_0$$
+
+Putting this value of S in earlier equation of R, we get:
+$$R(T) = N-S(T)$$
+$$R(T) = N- (N + \frac{1}{q}lnS -\frac{1}{q}lnS_0)$$
+$$R(T) = N- N - \frac{1}{q}lnS +\frac{1}{q}lnS_0$$
+$$R(T) = - \frac{1}{q}lnS +\frac{1}{q}lnS_0$$
+$$R(T)= \frac{1}{q}(lnS_0-lnS(T))$$
+$$R(T)= \frac{1}{q}[ln\frac{S_0}{S(T)}]$$
+Hence, the total number of infections will be $I_{total}=\frac{\beta}{\nu}(ln\frac{S_0}{S(T)})$.\\
+\\
+
+
+
+
+\textbf{\underline{How does the model inform public health policy?}}\\
+From earlier we have seen that if $R_0$, the Basic Reproductive Number is greater than 1, the disease will spread. Basic Reproductive Number is the expected number of infection cases that one infected individual will cause in the community where all the individuals are susceptible. So, if we can keep $R_0$ lower, then the disease disease will spread slower. $R_0 = \frac{\beta S_0}{\nu}=qS_0$ where $q = \frac{\beta}{\nu}$. So, basically, it depends on keeping q, the contact ratio lower. So regarding the public health policy, the model suggests to maintain the Social Distancing Measure. On keeping social distancing, there is low chance of contact with the infected individual and thus the lower probability that the infected individual will spread the disease. Additionally, maintaining personal hygiene such as washing hands regularly and using hand sanitizer also helps reduce the infection because it can kill the virus and germs. Virus can also transmit through the air. So wearing mask decreases the probability of getting in contact with the transmitted virus. Thus, masks should also be prioritized.\\
+\\
+
+{\textbf{\large Numerical Treatment of SIR Model}}\\
+
+As suggested we used the parameters from the paper 'The SIR model and the Foundations of Public Health' by Howard (Howie) Weiss. We used the $\beta$ = 0.7/50000, $\nu$=1/5, S(0)=49955, I(0)=5, R(0)=0 from the total population of N=50000. Using Python and these parameters we obtained the given simulation:
+
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=11.5cm]{python_SIR.png}
+    \caption{SIR Model Simulation}
+\end{figure}
+\\
+\textbf{\Large SIRD Model}\\
+\\
+SIRD Model is very much similar to SIR Model, but it is more sophisticated in a way that it accounts for mortality caused by the disease. Many diseases can be fatal. So SIRD model does one step better by incorporating dead individuals in addition to the recovered ones. In this model, the population is divided into four different compartments: 1) The Susceptible:  people who have no immunity to the disease, 2) The Infected:  people who have the disease, 3) The Recovered:  people who recovered from the disease and got lifetime immunity to it, and 4) The Dead: people who died due to the disease. The total population, N(t), is given by:
+$$N(t) =S(t) +I(t)+R(t) +D(t)$$
+\\
+
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=8.5cm]{SIRDModel.jpg}
+    \caption{SIRD Model}
+\end{figure}
+
+{\textbf{\large Features and Limitations of SIRD Model}}\\
+\\
+SIRD Model is better than SIR Model because it incorporates for the mortality, but it is also not the best or the complete model. It assumes that the epidemic is sufficiently short with the closed population so that there is no change in population (death created by the disease included in it) with no births, migrations, and deaths (\textbf{\textit{apart from those caused by the disease}}). Th rate at which susceptible people become infected depends on the individuals of susceptible and infectious compartments. The rate of the infected population is directly proportional to the number of susceptible and infected individuals. The rate of the recovered population depends on the infected population as well as the rate of the death depends on infected population.\\
+SIRD Model also assumes for the homogeneous mixing of the population with all the individuals in the system having an equal probability of contacting one another. SIRD model also does not incorporate for the uncertainty of the model parameters. It assumes that the recovered individuals are fully immune to the disease, but there might be diseases in which case the recovered individuals still have chance of being infected.\\
+Based on the given assumptions, limitations, and features, the four compartments of the SIRD Model evolve based on following system of ordinary differential equations:
+$$\frac{dS}{dt}=-\beta IS$$
+$$\frac{dI}{dt}=\beta IS - \nu I - \mu I$$
+$$\frac{dR}{dt}=\nu I$$
+$$\frac{dD}{dt}=\mu I$$
+\\
+
+{\textbf{\large Analytical Treatment of SIRD Model}}\\
+\\
+Let's take a derivative of N (the total population) with respect to time.
+$$\frac{dN}{dt}$$
+$$=\frac{d(S+I+R+D)}{dt}$$
+$$=\frac{dS}{dt}+\frac{dI}{dt}+\frac{dR}{dt}+\frac{dD}{dt}$$
+$$=(-\beta IS) + (\beta IS -\gamma I -\mu I) +(\gamma I) + (\mu I)$$
+$$=0$$
+This makes sense as the total number does not change with respect to time (death included in the total number), and if the total number is constant throughout the time, the derivative with respect to time is 0.\\
+\\
+\textbf{\underline{Will the disease eventually die out?}}\\
+Right hand side of the first differential equation is negative and of the third and the fourth differential equations is positive. This implies that $\frac{dS}{dt}\leq 0$, $\frac{dR}{dt}\geq 0$, and $\frac{dD}{dt}\geq 0$. As $0 \leq S(t) \leq S(0) \leq N$, $0 \leq R(0) \leq R(t) \leq N$, as well as $0 \leq D(0) \leq D(t) \leq N$ the limits as $t\rightarrow \infty$, S(t), R(t), and D(t) exist. So, $\lim_{t\to\infty}$, I(t) also exists implying $\lim_{t\to\infty}$ I(t) = N - $\lim_{t\to\infty}$ S(t) - $\lim_{t\to\infty}$ R(t) - $\lim_{t\to\infty}$ D(t) exist. For large t, $\frac{dR}{dt}\geq \frac{\nu I}{2} > 0$ and $\frac{dD}{dt}\geq \frac{\mu I}{2} > 0$. This implies $\lim_{t\to\infty} I(t) = \infty$ which is clearly a contradiction since no compartment can ever be greater than N, the total population. There won't be contradiction only when $\lim_{t\to\infty} I(t) = 0$. Hence, the disease will eventually die out.\\
+\\
+\textbf{\underline{Will the disease initially spread?}}\\
+Initially, we don't have any recovered and dead individuals, but only susceptible and the infected population. Let the initial susceptible population be $S = S_{0}$, Infected population be $I = I_{0}$, the Recovered population be $R = R(0) = 0$, and the Dead population be $D = D_{0} = 0$ . We have the first differential equations as:
+$$\frac{dS}{dt}=-\beta IS$$
+$\beta \geq  0$, $I \geq  0$, and $S \geq  0$. Thus, $\frac{dS}{dt} \leq 0$ because of the negative sign. Since the rate of the susceptible population is negative, susceptible population is decreasing and S must be smaller than or equals to its initial value $S_{0}$
+$$S \leq S_{0}$$
+Using this inequality, our second differential equation becomes:
+$$\frac{dI}{dt} \leq \beta IS_{0} - \nu I -\mu I $$
+$$\implies \frac{dI}{dt} \leq I(\beta S_{0} - \nu -\mu )$$
+The epidemic spreads if the size of Infected population is greater than its initial values. So, if the constant $\beta S_{0} - \nu -\mu $ is positive, the disease will spread. So, if $S_0 > \frac{(\nu + \mu) }{\beta}$, the disease will initially spread. \\
+Let $R_0 = \frac{\beta S_0}{\nu + \mu}$. This is the Basic Reproductive Number for this model. If $R_0> 1$, then the disease will initially spread.\\
+\\
+\textbf{\underline{What will be the maximum number of infections?}}\\
+Dividing the second differential equation by the first differential equation, we obtain:
+$$\frac{\frac{dI}{dt}}{\frac{dS}{dt}}= \frac{\beta I S-\nu I -\mu I }{-\beta I S}$$
+$$\frac{dI}{dS}= \frac{\beta I S-\nu I -\mu I }{-\beta I S}$$
+$$\frac{dI}{dS}=-1 + \frac{\nu }{\beta S} + \frac{\mu }{\beta S}$$
+Let $p = \frac{\beta}{(\nu+\mu)}$. So, our equation in terms of p becomes:
+$$\frac{dI}{dS}=-1 + \frac{1 }{p S}$$
+$$dI = (-1+\frac{1}{pS}) dS$$
+Integrating on both sides,
+$$\int dI = \int (-1+\frac{1}{pS}) dS$$
+$$I = -S + \frac{1}{p}lnS+K$$
+where K is integration constant. Initially, $I = I_{0}$ and $S = S_{0}$. So, 
+$$K = I_0 + S_0 -\frac{1}{p}lnS_0$$
+$$\therefore I = -S + \frac{1}{p}lnS+ N -\frac{1}{p}lnS_0$$
+Maximum number of infections occur when:
+$$\frac{dI}{dS}=0$$
+$$-1+\frac{1}{pS}=0$$
+$$qS=1$$
+$$\therefore S = \frac{1}{p}$$
+
+Substituting this value of S in the earlier equation of I
+$$I = -\frac{1}{p} + \frac{1}{p}ln\frac{1}{p}+ N -\frac{1}{p}lnS_0$$
+$$I = N -\frac{1}{p} (1-ln\frac{1}{p}+lnS_0)$$
+$$I = N -\frac{1}{p} (1-ln\frac{1}{p}+lnS_0)$$
+$$I = N -\frac{1}{p} (1+ln{p}+lnS_0)$$
+$$I = N -\frac{1}{p} (1+ln{(pS_0)})$$
+Substituting the value of p back.
+$$\therefore I = N -\frac{\nu + \mu}{\beta} (1+ln{(\frac{\beta }{\nu + \mu}S_0)})$$
+
+
+Hence, the maximum number of infections will be $I_{max} = N -\frac{\nu + \mu}{\beta} (1+ln{(\frac{\beta }{\nu + \mu}S_0)})$.\\
+\\
+\textbf{\underline{What will be the total number of infections?}}\\
+To find the total number of infections we need to know when the outbreak ends. Suppose, the outbreak ends at time T. At this time there would be no more infected people, and finding the total number of infections means finding the total number of recovered population and the dead population at time T because dead individuals also had the infections.
+We know: 
+$$R+S+I+D = N$$
+$$R(T)+D(T) = N-I(T)-S(T)$$
+$$R(T)+D(T) = N-0-S(T)$$
+$$R(T)+D(T) = N-S(T)$$
+
+So, at first we need to find the total number of susceptible population at time T.
+From earlier, we have the equation:
+$$ I + S = \frac{1}{p}lnS+ N -\frac{1}{p}lnS_0$$
+At time T, I(T) = 0. So,
+$$ S = \frac{1}{p}lnS+ I_0 + S_0 -\frac{1}{p}lnS_0$$
+$$ S = N + \frac{1}{p}lnS -\frac{1}{p}lnS_0$$
+
+Putting this value of S in earlier equation of R+D, we get:
+$$R(T)+D(T) = N-S(T)$$
+$$R(T)+D(T) = N- (N + \frac{1}{p}lnS -\frac{1}{p}lnS_0)$$
+$$R(T)+D(T) = N- N - \frac{1}{p}lnS +\frac{1}{p}lnS_0$$
+$$R(T)+D(T) = - \frac{1}{p}lnS +\frac{1}{p}lnS_0$$
+$$R(T)+D(T)= \frac{1}{p}(lnS_0-lnS(T))$$
+$$R(T)+D(T)= \frac{1}{p}[ln\frac{S_0}{S(T)}]$$
+$$\therefore R(T)+D(T)= \frac{\nu + \mu}{\beta}[ln\frac{S_0}{S(T)}]$$
+
+Hence, the total number of infections will be $I_{total}=\frac{\nu + \mu}{\beta}[ln\frac{S_0}{S(T)}]$.\\
+\\
+
+Cite: https://www-ncbi-nlm-nih-gov.ezp-prod1.hul.harvard.edu/pmc/articles/PMC7321055/
+\\
+\\
+{\textbf{\Large Application of Models to Real-Life Data}}\\
+\\
+\\
+\textbf{\underline{Methods}}\\
+Having established the features and limitations of both the SIR model and SIRD models, we will now apply these models to real-life data in Nepal and Japan to model the future outcome of the disease. As a source of real-life data, we used the worldometer coronavirus cases tracker (https://www.worldometers.info/coronavirus/)
+\\
+\\
+{\textbf{\underline {Application of the SIR Model}}\\
+\\
+Firstly, we wanted to apply the SIR model to data in Japan, to predict the outcome of the virus from the current timepoint to the future.
+A challenge with the SIR model is identifying suitable values for the parameters for infection rate, $\beta$ and recovery rate, $\nu$. The recovery rate is largely dependent on the disease, since $\nu = 1/D$, where D is the duration of the infection. We set D = 10 days according to work by Kuniya, (https://www.mdpi.com/2077-0383/9/3/789/html) and therefore we fixed $\nu$ = 0.1. The $\beta$ value is more dependent on the location that is being modeled, and we could not find an adequate source for $\beta$ for Japan. In their work, Cooper and coworkers determine the parameter for $\beta$ based on "manually fitting the recorded data as best as possible, based on a trial-and-error approach and visual inspections." Therefore, in the case of Japan, we aimed to find a $\beta$ value based on their most recent 4th wave of infections, from July 2nd to November 1st 2021. 
+\\
+\\
+Using a numerical model for the SIR disease model, we used the maximum number of modeled active infections as a metric to see if a tested $\beta$ value was suitable. Using July 2 as a starting point of t=0, we used the real life parameters of $N=125921894$, $I_{0} = 16935$, $R_{0} = 734006$, $S_{0}$ = $N$ - $I_{0}$ - $R_{0}$ = 125170953 based on the worldometer coronavirus cases tracker. Using a numerical model, we tested various values of $\beta$ to arrive at $\beta = 0.107/N$, which gave the maximum number of infections of 255231, which we deemed to be sufficiently close to the real-life peak of infections at 249281. This can be seen in figure 4. 
+\\
+\\
+One obvious flaw with this mode of approximating a value of $\beta$ is that the time-scale for the simulated graph, where more than 500 days are required to reach the peak number of infections, is widely different from the 59 days it took for the peak to be reached in real life. We hypothesized that a big reason would be that the SIR model does not take into account cultural contexts such as lockdowns and the implementation of social distancing measures which could prevent a theoretical "peak" from being reached, interrupting the natural progression of infections that would be simulated by the model. This would explain why the relationship between timepoint and infectious cases was so inaccurate in this model. 
+\\
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=10.0cm]{Japan_obtaining_beta_1.png}
+    \caption{Numerical simulation of Covid infections for japan when $\beta$ = 0.107/N, based on real-life data from July 2nd}
+\end{figure}\\
+\\
+Therefore, in our next approach, we hypothesized that wherever a "peak" appears in an SIR model \textbf{would not accurately represent} the timepoint where a "peak" would appear in real life. We rationalized that instead, a better approach would be to find a $\beta$ value that gave the most precise number of infected patients after a certain time. Following this analysis, we chose the maximum "real-life" number of 249281 actively infected patients at t = 60 days after July 2nd as the reference point to compare the number of infected patients simulated by the model. We thought this was a suitable point to choose because it is right before the number of active patients starts to decrease, presumably due to the implementation of social distancing measures. From our analyses, we obtained an optimized $\beta$ value of 0.146/N, that simulated 253349 infected at t=60 days. This $\beta$ value also more closely approximates the theoretically obtainable $\beta$ value. The theoretical value for $\beta$ can be calculated from the effective reproductive number $R_{e}$ by 
+$$R_{e} = S_{0}\beta/\nu. $$
+We know $R_{e}$ for Japan in July 2021 to be 1.36 (https://www.theglobaleconomy.com/rankings/covid_reproduction_rate/),
+\\
+giving $\beta$ = 0.136/$S_{0}$ $\approx$ 0.137/$N$. Our newly obtained value through numerical analysis, $\beta$ = 0.146/N, more closely approximates this theoretical value than our previous value of $\beta$ = 0.107, giving us confidence that our new method of approximation is more suitable. Interestingly, our model indicates that without any societal measure that stopped the spread of the virus, a peak of active infections of 6815973 would have been reached at around 170 days.
+\\
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=15.0cm]{Japan_obtaining_beta.png}
+    \caption{Numerical simulation of Covid infections for japan when $\beta$ = 0.146/N, based on real-life data from July 2nd}
+\end{figure}\\
+\\
+Now, with our obtained parameters, we moved on to simulate the outcome of the coronavirus from now to the future in Japan. We used the most up-to-date figures of n=125921894, $I_{0} = 822$, $R_{0} = 1727291$, and $S_{0} = 124193781$ (figure 5). Our numerical model shows that without any social distancing measures, a peak of 6499224 active infections will be reached in about 240 days.
+\\
+\\
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=15cm]{Japan_future_simulation.png}
+    \caption{Numerical simulation of Covid infections for japan in the future}
+\end{figure}\\
+\\
+
+Nonetheless, the SIR model likely is not an entirely accurate mode of modeling the disease progression. Firstly, the SIR model does not account for cases that are brought into the country from abroad.  Furthermore, the SIR model assumes that infected people will continue to pass on the disease to those susceptible at equal rates throughout their infection. (https://www-nature-com.ezp-prod1.hul.harvard.edu/articles/s41598-021-84055-6#additional-information) In reality, this is not true, because typically those with coronavirus symptoms are tested rapidly and are placed in quarantine, where their ability to spread the disease becomes severely limited for the remainder of their illness. 
+\\
+\\
+\textbf{\underline{Application of the SIRD Model}}\\
+
+Now, we wanted to apply the SIRD model to a real life scenario. We chose the country of Nepal. Similarly to the way we determined the parameters for the SIR model, we set $\nu$ = 0.1 according to (https://www.mdpi.com/2077-0383/9/3/789/html). The SIRD also has the parameter $\mu$, for mortality. We calculated the mortality of coronavirus in Nepal by dividing deaths by the total number of cases obtained from the coronavirus worldometer, obtaining $\mu$ = 0.014. We aimed to approximate the value of $\beta$ by simulating different values manually that match the outcome of the second coronavirus wave in Nepal, from March 2 to July 15th. Setting March 2 as t=0, and the initial values N = 29888993, $I_{0}$ = 742, $D_{0} = 3010$, $R+{0}$ = 270464, $S_{0}$ = 29614777 obtained from the worldometer coronavirus tracker, we tested various values of $\beta$. Our metric was to find a $\beta$ to that matched the real-life observation of 117077 cases in May 26 (t = 86). From this analysis, we obtained an optimal $\beta$ of 0.1743/N, to give a simulated number of infected of 117568 people at t=86 days. This matches with the theoretically obtainable $\beta$ value from the relation $R_{e} = S_{0}\beta/\nu$, where $R_{e}$ = 1.78 for Nepal in that period, which gives $\beta$ = 0.178/$S_{0}$ $\approx$ 0.180/N. 
+\\
+
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=15cm]{Nepal_obtaining_beta.png}
+    \caption{Numerical simulation of Covid infections for Nepal to obtain a suitable $\beta$ value. Top right: real life data on fourth wave. Bottom: simulated data, indicating peak infection time. Top Left: simulated data, zoomed into relevant (t=92) timepoints for optimization}
+\end{figure}\\
+\\
+
+With this obtained $\beta$ value in hand, we moved on to simulate the outcome of the disease in the future in Nepal. 
+
+\begin{figure}[htp]
+\centering
+    \includegraphics[width=15cm]{Nepal_future_simulation.png}
+    \caption{Numerical simulation of Covid infections for Nepal for the future.}
+\end{figure}
+
+
+\section*{Bibliography:}
+\begin{enumerate}
+    \item Crawford, T.,(2020). Oxford Mathematician explains SIR Disease Model for COVID-19 (Coronavirus). Retrieved from \text{www.youtube.com/watch?v=NKMHhm2Zbkw}\\
+    \item Weiss, H., H.(2013). The SIR model and the Foundations of Public Health. Retrieved from https://mat.uab.cat/web/matmat/wp-content/uploads/sites/23/2020/05/v2013n03.pdf\\
+    \item Prem, K., Liu Y., Russell, W., T., Kucharski, J., A., Eggo, M. R., Davies, N. (2020). The effect of control strategies to reduce social mixing on outcomes of the COVID-19 epidemic in Wuhan, China: a modelling study, Volume 5, Issue 5, March 2020, Retrieved from https://www.thelancet.com/journals/lanpub/article/PIIS2468-2667(20)30073-6/fulltext\\
+    \item Tolles, J., Luong, T. (2020). Modeling Epidemics With Compartmental Models. Retrieved from https://jamanetwork.com/journals/jama/fullarticle/2766672\\
+    \item Kong, Q., Siauw, T., Bayen, A.(2020). Python Numerical Methods. Retrieved from https://pythonnumericalmethods.berkeley.edu/notebooks/chapter22.06-Python-ODE-Solvers.html\\
+    \item Cooper, I., Mondal, A., Antonopoulos, C., G. (2020). A SIR model assumption for the spread of COVID-19 in different communities. Retrieved from https://www-ncbi-nlm-nih-gov.ezp-prod1.hul.harvard.edu/pmc/articles/PMC7321055/
+    \item Idowu, I. (2021). Mathematical Modelling: Modelling the Spread of Diseases with SIRD Model. Retrieved from https://www.analyticsvidhya.com/blog/2021/08/mathematical-modelling-modelling-the-spread-of-diseases-with-sird-model/\\
+    \item Wikipedia, (2021). COVID-19 pandemic in Nepal. Retrieved from https://en.wikipedia.org/wiki/COVID-19$_$pandemic$_$in$_$Nepal\\
+    \item Corona Virus Cases in Japan (2020-2021). Worldometer. Retrieved from https://www.worldometers.info/coronavirus/country/japan/\\
+    \item Corona Virus Cases in Nepal (2020-2021). Worldometer. Retrieved from https://www.worldometers.info/coronavirus/country/nepal/\\
+\end{enumerate}
+
+
+
+
+\end{document}
+

@@ -10,6 +10,8 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
 
 % Set page margins
 \geometry{margin=1in}
@@ -67,13 +69,37 @@ The NSIS data from 2018 provides us a unique opportunity to examine this relatio
 
 % Data 
 \section{Data}
-In my study, I use data from Nepal Social Inclusion Survey (NSIS) 2018. NSIS is a survey dataset which is conducted as a Study On Social Inclusion In Nepal (SOSIN) by Central Department of Anthropology, Tribhuwan University.  The dataset reports information on various socio-economc indicators of household and individuals in Nepal. It includes information on household information, health and social security, work and livelihood, language and education, social, cultural and gender relations, inclusive governance, women's empowerment and reproductive health.
+In my study, I use data from Nepal Social Inclusion Survey (NSIS) 2018. NSIS is a survey dataset which is conducted as a Study On Social Inclusion In Nepal (SOSIN) by Central Department of Anthropology, Tribhuwan University.  The dataset reports information on various socio-economc indicators of household and individuals in Nepal. It includes information on different characteristics within household information, health and social security, work and livelihood, language and education, social, cultural and gender relations, inclusive governance, women's empowerment and reproductive health.
+The summary statistics of the final data that I used is given below:
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{summary_statistcs.png}
+    \caption{Table 1}
+    \label{Table of Summary Statistics}
+\end{figure}
 
+I pooled the dataset from parent NSIS 2018 datasets which was further divided into sub datasets based on different demographic and economics sections. I merged the datasets which included the information that I required for this questions such as data on vaccinations, family income, education, ethnic groups and absentee population.
+I then assigned 1 to each of BCG, Pneumococcal, Oral Polio, DPT/HEPB/HIB, Rubella if they had been given to their child else they else 0 was assigned. These vaccinations were further divided into bacterial vaccine and viral vaccine based on the characteristics of the cause of the disease that we are interested. They are further assigned 1 if each of bacterial or viral vaccines were administered else 0 was assigned. I also restrict the data to those families that had at least one absentee population. The absentee population is defined as anyone who is not present in the family because of foreign employment (within country or outside country) so that it can be used as an instrument. Families with missing information for any of the variables of our question were omitted. The final dataset has 337 observations out of which approximately 84\% were households with female head. \footnote{We have selected the families with at least one absentee population}. Table 1 summarizes the above dataset. We see that on average 95\% of the family had given the child full vaccinations for a bacterial disease and 88\% had given full vaccinations for viral disease.
 % Methods
 \section{Methods}
-This section describes the data source(s), variables, and statistical methods used in the analysis. It should also provide information on the study population and sample size.
+I use instrumental variable method to study the causal relationship between female household headship and child vaccination rate. The absentee population is defined as the instrument. In this paper, absentee population is defined as the member of the family who is away from home for the employment. I wish to estimate the following regression model:
+\begin{align}
+    y_i = \beta_0 + \beta_1 x_i + \eta_i
+\end{align}
+In this regression, we are interested in $\beta_1$ as our coefficient of interest. But the problem is that there can be a problem of edogeneity as the error term is possibly correlated with our variable of independent variable. So, I come up with the first stage regression model:
+\begin{align}
+    x_i = \pi_0 + \pi z_i + \nu_i
+\end{align}
+where $\pi_0 + \pi z_i$ is the component of $x_i$ that is explained by $z_i$ while $\nu_i$ is the component that cannot be explained by $z_i$ and exhibits correlation with $\nu_i$.
+where I have assumed that the following assumptions holds:\\
+(i) Exogeneity: the absentee population is not related with the error term in equation (1).\\
+(ii) Relevance: The household head being a female is correlated with the absentee population.
+(iii) Exclusion restriction: the absentee population is not correlated with vaccination rate of the child. absentee population is correlated with child vaccination rate except through their effect on the endogenous variable of interest.\\
+(iv) Monotonicity: The absentee does not have effect on the outcome variable other than through their effect on the endogenous variable of interest.\\
+(v) Validity: The absentee population is not a subject to measurement error or other forms of bias.
 
+Given that there is an absentee in the family (the dataset that we are interested in), male absentee consists massive 90.24 \% while female absentee consists only 9.76\%. So, in an overall data, male consists this [this much percentage.....] and female consists [this much...], and female household head is [this much.... ]. In our dataset female as a household consists [this much.......]. So it becomes obvious that when there is a absentee in a family, mother is most likely to be the head of the household. {this much percentage vaccination rate overall and when there is an absentee in the family, this much}. So, we can conclude that there is not much a correlation of being absentee to the child vaccination rate. We will be testing the limitations of these assumptions later, but we can argue that our instrument for the analysis is a valid instrument.
 
 % Results
 \section{Results}

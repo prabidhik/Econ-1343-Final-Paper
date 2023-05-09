@@ -14,7 +14,7 @@
 \usepackage{float}
 
 % Set page margins
-\geometry{margin=1in}
+\geometry{margin=1.1in}
 
 % Set line spacing
 \doublespacing
@@ -108,7 +108,16 @@ Given that there is an absentee in the family (the dataset that we are intereste
     \label{Table of Summary Statistics}
 \end{figure}
 
+As our vaccination rate is further divided into viral vaccination rate and bacterial vaccination rate, I apply the same method and instrument in both the cases with outcome being either bacterial vaccination rate or viral vaccination rate.
 
+The reduced form regression that I use is:
+
+\begin{align}
+    y_i = \mu_0 + \mu z_i + \theta_i
+\end{align}
+
+
+We then divide the beta coefficient obtained from the reduced form regression by the beta coefficient obtained from first stage regression to find the beta coefficient of interest. I controlled for potential confounding variables by including them as covariates in our regression model. Specifically, I included variables: log wage, education, social group, ethnic group to account for their potential effects on the outcome variable.
 
 % Results
 \section{Results}
@@ -120,7 +129,7 @@ This section interprets the results and discusses their implications. It should 
 
 % Conclusion
 \section{Conclusion}
-This section summarizes the main findings of the study and provides policy recommendations.
+This section summarizes the main findings of the study and provides policy recommendations. 
 
 % References
 \bibliographystyle{plainnat}

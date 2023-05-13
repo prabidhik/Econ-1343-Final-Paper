@@ -1,0 +1,228 @@
+---
+title: "Filtering"
+author: "Prabidhik KC"
+date: "2023-05-07"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+## Loading the required library packages
+
+library(tidyverse)
+library(haven)
+```
+
+```{r}
+## Reading the required file
+
+## First check the masterfile
+
+data2018 = "/Users/prabidhikkc/Documents/NSIS dataset/NSIS2018_DATA_STATA/Masterfile_018.dta"
+data_2018 <- read_dta(data2018)
+
+## Create a dataframe with required variables from masterfile
+
+master <- data_2018 %>% 
+  select(www, cln, hh, q00_01, q00_02, q00_07, social_group) %>% 
+  unite(id, www, cln, hh, sep = "_")
+
+
+
+section_1 = "/Users/prabidhikkc/Documents/NSIS dataset/NSIS2018_DATA_STATA/SEC01.dta"
+data_2018_s1 <- read_dta(section_1) %>% 
+  select(www, cln, hh, q01_102, q01_103, q01_110) %>% 
+  unite(id, www, cln, hh, sep = "_")
+
+
+data_2018_s1m <- merge(master, data_2018_s1, by = "id")
+
+unique(data_2018_s1m$q01_102)
+unique(data_2018_s1m$q01_103)
+
+section_4f = "/Users/prabidhikkc/Documents/NSIS dataset/NSIS2018_DATA_STATA/SEC04F.dta"
+section_4fr <- read_dta(section_4f)
+
+percentage <- section_4fr %>% 
+  count(q04_411b)
+
+percent = (percentage[1]/(percentage[1]+percentage[2]))*100
+  
+  
+data_2018_s4 <- read_dta(section_4f) %>% 
+  select(www, cln, hh, q04_411b) %>% 
+  unite(id, www, cln, hh, sep = "_")
+
+data_2018_s4m <- merge(data_2018_s1m, data_2018_s4, by ="id")
+
+section_4g = "/Users/prabidhikkc/Documents/NSIS dataset/NSIS2018_DATA_STATA/SEC04H.dta"
+data_2018_s4g <- read_dta(section_4g) %>% 
+  select(www, cln, hh, q04_420a, q04_420b) %>% 
+  unite(id, www, cln, hh, sep = "_") %>% 
+  group_by(id) %>% 
+  summarise(total_expenditure=sum(q04_420b)) %>% 
+  mutate(
+    income = (1/0.86)*total_expenditure
+  )
+
+data_2018_s4gm <- merge(data_2018_s4m, data_2018_s4g, by ="id")
+
+
+unique(data_2018_s4gm$q04_411b)
+table(data_2018_s4gm$q04_411b)
+
+data_2018_s4gmm <- data_2018_s4gm %>% 
+  mutate(
+    household_head = if_else(q01_102 == 1 & q01_103 == 1, 0, 1)
+  )
+
+unique(data_2018_s4gmm$household_head)
+table(data_2018_s4gmm$household_head) 
+
+(44635/sum( 8038, 44635 ))*100
+
+
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+section_3 = "/Users/prabidhikkc/Documents/NSIS dataset/NSIS2018_DATA_STATA/SEC03D.dta"
+data_2018_s3 <- read_dta(section_3) 
+
+
+vaccination <- data_2018_s3 %>% 
+  select(www, cln, hh, q03_304f, q03_304g, q03_304h, q03_304i, q03_304j) %>% 
+  unite(id, www, cln, hh, sep = "_") %>% 
+  group_by(id) %>% 
+  slice_head(n=1) %>% 
+  filter(q03_304g != 9,
+         q03_304h != 9,
+         q03_304i != 9,
+         q03_304j != 3) 
+
+
+```
+
+
+```{r}
+vaccination1 <- data_2018_s3 %>% 
+  select(www, cln, hh, q03_304f, q03_304g, q03_304h, q03_304i, q03_304j) %>% 
+  unite(id, www, cln, hh, sep = "_") %>% 
+  filter(q03_304g != 9,
+         q03_304h != 9,
+         q03_304i != 9,
+         q03_304j != 3) 
+
+
+unique_count <- length(unique(vaccination1$id))
+
+
+data_2018_merge <- inner_join(vaccination, data_2018_s4gmm,  by = "id")
+
+
+
+unique_count <- length(unique(data_2018_s4gmm$id))
+```
+
+
+## Saving these obtained datasets
+```{r}
+write.csv(data_2018_merge, file = "big_data.csv", row.names = FALSE)
+
+
+```
+
+
+
+## Merging two datasets
+```{r}
+## Read our saved data
+
+big_data <- read_csv("big_data.csv")
+
+## Renaming the variables
+
+merged_data1 <- big_data %>% 
+  rename(
+    District = q00_01, State = q00_02, Ethnic_Group = q00_07, 
+    Social_Group = social_group, Education = q01_110, Absentee = q04_411b,
+    BCG = q03_304f, Oral_Polio = q03_304g, DPT_HEPB_HIB = q03_304h, 
+    Pneumococcal = q03_304i, Rubella = q03_304j
+  ) 
+
+#unique_data <- big_data %>% 
+  #select(-q00_01.y, -q00_02.y, -q00_07.y, -social_group.y, -q01_102.x, -q01_102.y,
+         #-q01_102.y, -q01_110.y, -q01_103.y, -q04_411b.y, -q01_103.x)
+  
+table(merged_data1$household_head)  
+
+big_data2 <- merged_data1 %>% 
+  group_by(id) %>% 
+  slice_head(n=1)
+```
+
+
+
+
+```{r}
+
+merged_df <- big_data2 %>% 
+  mutate_if(is.numeric, as.numeric)
+
+
+## Sving this data, so we can start working from this from next time
+
+write.csv(merged_df, file = "merged_2018", row.names = FALSE)
+
+```
+
+```{r}
+## Giving the weights on vaccinations: 
+
+## If a child has been vaccinated, it will be denoted with 1 else 0
+
+unique(merged_df$BCG)
+
+merged_df2 <- merged_df %>% 
+  mutate(
+   BCG = if_else(BCG == 1, 1, 0) 
+  )
+
+```
+
+
+```{r}
+## Saving the datafile
+
+write.csv(merged_df2, file = "merged_file.csv", row.names = FALSE)
+```
+
+## Regressions
+```{r}
+## Loading a package called stargazer which helps in making regressions easier 
+## and beautiful
+
+?AER
+library(stargazer)
+library(AER)
+
+
+#--------------------------- Custom Stargazer Output
+mystar <- function(...) {
+stargazer(..., type = 'text', header = FALSE, digits = 2, omit.stat = c('f', 'ser', 'adj.rsq'))
+}
+
+#--------------------------- Question 2: OLS Regression
+ols <- lm(BCG ~ household_head, unique_df)
+mystar(ols, title = 'OLS Results')
+```
+

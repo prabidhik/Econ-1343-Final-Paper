@@ -1,0 +1,266 @@
+---
+title: "regression works"
+author: "Prabidhik KC"
+date: "2023-05-07"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(haven)
+library(stargazer)
+library(AER)
+```
+
+```{r}
+
+## Reading the necessary file
+data_file = "/Users/prabidhikkc/Documents/NSIS dataset/dataset_2018/Filtering_2018/merged_file.csv"
+merged_file <- read.csv(data_file)
+
+merged_file <- merged_file %>% 
+  mutate(wage = log(income),
+         bacterial_vaccine = if_else(Pneumococcal > 0 & BCG == 1, 1, 0),
+         viral_vaccine = if_else(Oral_Polio > 0 & DPT_HEPB_HIB > 0 & Rubella == 1, 1, 0)) 
+
+merged_file_reduced <- merged_file %>% 
+  select(BCG, Pneumococcal, Oral_Polio, DPT_HEPB_HIB, Rubella, Ethnic_Group, Social_Group,
+         Education, Absentee, wage, bacterial_vaccine, viral_vaccine)
+  
+
+```
+
+## Summary Statistics
+```{r}
+stargazer(merged_file_reduced, type = "latex", summary = TRUE, title = "Table of Summary Statistics")
+```
+
+## Regressions 
+```{r}
+#--------------------------- Custom Stargazer Output
+mystar <- function(...) {
+stargazer(..., type = 'latex', header = FALSE, digits = 2, omit.stat = c('f', 'ser', 'adj.rsq'))
+}
+```
+
+```{r}
+#--------------------------- Question 2: OLS Regression
+ols <- lm(bacterial_vaccine ~ household_head, merged_file)
+mystar(ols, title = 'OLS Results')
+```
+
+```{r}
+#--------------------------- Question 3: IV Regression
+# First-stage
+first_stage <- lm(household_head ~ Absentee, merged_file)
+mystar(first_stage, title = 'First Stage Regression')
+```
+
+```{r}
+# Reduced Form
+reduced_form <- lm(bacterial_vaccine ~ Absentee, merged_file)
+mystar(reduced_form, title = 'Reduced Form Regression')
+```
+
+```{r}
+# IV Regression
+iv <- ivreg(bacterial_vaccine ~ household_head | Absentee, data = merged_file)
+mystar(iv, title = 'IV Results')
+```
+
+```{r}
+# IV by hand
+coef(reduced_form)[2] / coef(first_stage)[2]
+```
+
+```{r}
+#-------------------------- Controlling other variables
+ols2 <- lm(bacterial_vaccine ~ household_head + Education + wage, merged_file)
+mystar(ols, ols2, title = 'OLS Results')
+```
+
+```{r}
+first_stage2 <- lm(household_head ~ Absentee + Education + wage, merged_file)
+mystar(first_stage, first_stage2, title = 'First Stage Regression')
+```
+
+```{r}
+iv2 <- ivreg(bacterial_vaccine ~ household_head + Education + wage | Absentee + Education + wage, data = merged_file)
+mystar(iv, iv2, title = 'IV Results')
+```
+
+```{r}
+#-------------------------- Question 5: Bacterial Vaccine
+iv3 <- ivreg(bacterial_vaccine ~ household_head + Education + wage + Ethnic_Group + Social_Group |
+Absentee + Education + wage + Ethnic_Group + Social_Group,
+data = merged_file)
+mystar(iv, iv2, iv3, title = 'Bacterial vaccine on household head')
+```
+
+## Repeating the same process for Viral Vaccine
+```{r}
+#--------------------------- Question 2: OLS Regression
+ols_v <- lm(viral_vaccine ~ household_head, merged_file)
+mystar(ols_v, title = 'OLS Results')
+```
+
+```{r}
+#--------------------------- Question 3: IV Regression
+# First-stage
+first_stage_v <- lm(household_head ~ Absentee, merged_file)
+mystar(first_stage_v, title = 'First Stage Regression')
+```
+
+```{r}
+# Reduced Form
+reduced_form_v <- lm(viral_vaccine ~ Absentee, merged_file)
+mystar(reduced_form_v, title = 'Reduced Form Regression')
+
+
+```
+
+```{r}
+# IV Regression
+iv_v <- ivreg(viral_vaccine ~ household_head | Absentee, data = merged_file)
+mystar(iv_v, title = 'IV Results')
+```
+
+```{r}
+# IV by hand
+coef(reduced_form_v)[2] / coef(first_stage_v)[2]
+```
+
+```{r}
+#-------------------------- Controlling other variables
+ols2_v <- lm(viral_vaccine ~ household_head + Education + wage, merged_file)
+mystar(ols_v, ols2_v, title = 'OLS Results')
+```
+
+```{r}
+first_stage2_v <- lm(household_head ~ Absentee + Education + wage, merged_file)
+mystar(first_stage_v, first_stage2_v, title = 'First Stage Regression')
+```
+
+```{r}
+iv2_v <- ivreg(viral_vaccine ~ household_head + Education + wage | Absentee + Education + wage, data = merged_file)
+mystar(iv_v, iv2_v, title = 'IV Results')
+```
+
+```{r}
+#-------------------------- Question 5: Viral Vaccine
+iv3_v <- ivreg(viral_vaccine ~ household_head + Education + wage + Ethnic_Group + Social_Group |
+Absentee + Education + wage + Ethnic_Group + Social_Group,
+data = merged_file)
+mystar(iv_v, iv2_v, iv3_v, title = 'Viral Vaccination Rate')
+```
+
+```{r}
+library(rnaturalearth)
+library(sf) 
+
+
+
+
+
+```
+
+```{r}
+# Load Nepal province-level map data
+nepal_provinces <- ne_states(country = "nepal", returnclass = "sf")
+
+
+```
+
+```{r}
+# Load your data (replace with your own data)
+nepal_data <- read.csv("/Users/prabidhikkc/Documents/NSIS dataset/dataset_2018/Filtering_2018/merged_file.csv")
+```
+
+```{r}
+# Merge the data with the map
+#nepal_map_data <- merge(nepal_provinces, nepal_data, by = "State")
+
+state <- merged_file %>% 
+  group_by(District, State)
+
+
+unique(nepal_provinces$provnum_ne)
+
+nepal_prov <- nepal_provinces %>% 
+  select(name, provnum_ne)
+```
+
+```{r}
+## Mapping Nepal's district to its zone
+
+nepal_zones <- merged_file %>% 
+  mutate(
+    provnum_ne = case_when(
+    District <= 4 ~ 6,  ## Mechi
+    District >4 & District <= 10 ~ 7,  ## Koshi
+    District >10 & District <= 16 ~ 5, ## Sagarmatha
+    District >16 & District <= 22 ~ 3, ## Janakpur
+    District >22 & District <= 30 ~ 10, ## Bagmati
+    District > 30 & District <= 35 ~ 1, ## Narayani
+    District > 35 & District <= 41 ~ 11, ## Gandaki
+    District > 41 & District <= 45 ~ 9, ## Dhawalagiri
+    District > 45 & District <= 51 ~ 4, ## Lumbini
+    District > 51 & District <= 56 ~ 2, ## Rapti
+    District > 56 & District <= 61 ~ 14, ## Bheri
+    District > 61 & District <= 66 ~ 13, ## Karnali
+    District > 66 & District <= 70 ~ 12, ## Seti
+    District > 70  ~ 8, ## Mahakali
+    )
+  ) %>% 
+  group_by(provnum_ne) %>% 
+  summarize(avg_viral_vaccine = mean(viral_vaccine),
+            avg_bacterial_vaccine = mean(bacterial_vaccine))
+ 
+
+
+
+```
+
+```{r}
+## Making a zone wise map
+
+nepal_map_data <- merge(nepal_provinces, nepal_zones, by = "provnum_ne")
+
+write.csv(nepal_map_data, file = "nepal_map_data.csv", row.names = FALSE)
+
+# Create the map plot
+ggplot() +
+  geom_sf(data = nepal_map_data, aes(fill = avg_viral_vaccine)) +
+  scale_fill_gradient(low = "lightblue", high = "darkred", name = "Vaccination Rate") +
+  labs(title = "Nepal map with Viral Vaccination Rate", subtitle = "Zone Wise") +
+  theme_void()
+```
+
+```{r}
+# Create the map plot
+ggplot() +
+  geom_sf(data = nepal_map_data, aes(fill = avg_bacterial_vaccine)) +
+  scale_fill_gradient(low = "orange", high = "pink", name = "Vaccination Rate") +
+  labs(title = "Nepal map with Bacterial Vaccination Rate", subtitle = "Zone Wise") +
+  theme_void()
+```
+
+
+```{r}
+## vaccination for the whole
+
+merged_file3 <- merged_file %>% 
+  mutate(
+    vaccine = if_else(viral_vaccine ==1 & bacterial_vaccine == 1, 1, 0)
+  )
+
+# Plot the regression line with error bars
+ggplot(merged_file3, aes(x = vaccine, y = household_head)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
